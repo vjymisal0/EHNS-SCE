@@ -1,0 +1,25 @@
+# ── Python / Backend ──
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/*.db
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ── Node / Frontend ──
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# ── IDE / OS ──
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+
+# ── Environment ──
+.env
+.env.*
