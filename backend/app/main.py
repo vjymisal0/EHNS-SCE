@@ -12,6 +12,7 @@ Configures:
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 import logging 
 import time
 import uuid
@@ -46,6 +47,20 @@ limiter = Limiter(key_func=get_remote_address, default_limits=[RATE_LIMIT])
 # ──────────────────────────────────────────────
 # Application factory
 # ──────────────────────────────────────────────
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    logger.info("Connecting to MongoDB...")
+    await connect_db()
+    logger.info("File Security Analyzer API is ready.")
+    try:
+        yield
+    finally:
+        logger.info("Shutting down...")
+        await close_db()
+
+
 app = FastAPI(
     title="File Security Analyzer",
     description=(
@@ -56,6 +71,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 # Attach rate limiter
@@ -141,22 +157,6 @@ async def value_error_handler(request: Request, exc: ValueError):
         status_code=status.HTTP_400_BAD_REQUEST,
         content={"detail": str(exc)},
     )
-
-
-# ──────────────────────────────────────────────
-# Startup / shutdown events
-# ──────────────────────────────────────────────
-@app.on_event("startup")
-async def on_startup():
-    logger.info("Connecting to MongoDB...")
-    await connect_db()
-    logger.info("File Security Analyzer API is ready.")
-
-
-@app.on_event("shutdown")
-async def on_shutdown():
-    logger.info("Shutting down...")
-    await close_db()
 
 
 # ──────────────────────────────────────────────

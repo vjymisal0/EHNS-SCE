@@ -39,6 +39,27 @@ uv run uvicorn app.main:app --reload --port 8000
 
 API docs at http://localhost:8000/docs
 
+#### Run Backend Now (PowerShell)
+
+```powershell
+Set-Location "D:\EHNS SCE\backend"
+uv run uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Verify backend health:
+
+```powershell
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/" -UseBasicParsing
+```
+
+Open docs:
+
+- http://127.0.0.1:8000/docs
+
+Stop server:
+
+- Press `Ctrl+C` in the backend terminal.
+
 ### Frontend
 
 ```bash
